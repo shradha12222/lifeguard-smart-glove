@@ -111,8 +111,10 @@ app.post("/api/ai/chat", async (req, res) => {
       });
     }
 
-    const completion = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
+const completion = await groq.chat.completions.create({ 
+  model: "llama-3.3-70b-versatile",
+
+  max_completion_tokens: 500,
 
       messages: [
         {

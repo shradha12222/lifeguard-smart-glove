@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 
 function AIChatbot() {
+  const API_URL =
+  process.env.REACT_APP_API_URL || "http://localhost:5000";
   const [isOpen, setIsOpen] = useState(false);
 
   const [messages, setMessages] = useState([
@@ -31,7 +33,7 @@ function AIChatbot() {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/ai/chat",
+        `${API_URL}/api/ai/chat`,
         {
           method: "POST",
 
@@ -65,18 +67,43 @@ function AIChatbot() {
           },
         ]);
       }
-    } catch (error) {
-      console.error("AI Error:", error);
+} catch (error) {
+  console.error("AI Error:", error);
 
-      setMessages((prev) => [
-        ...prev,
-        {
-          sender: "bot",
-          text:
-            "⚠️ Unable to connect to LifeGuard AI. Please check that the backend is running.",
-        },
-      ]);
-    }
+  const lower = userMessage.toLowerCase();
+
+  let reply =
+    "🤖 I'm currently in Demo Mode. I can help you with medicines, BPM, temperature and basic health tracking.";
+
+  if (lower.includes("bpm") || lower.includes("heart")) {
+    reply =
+      "❤️ Normal resting heart rate is generally around 60–100 BPM. Please monitor unusual or persistent readings.";
+  } 
+  else if (lower.includes("medicine") || lower.includes("tablet")) {
+    reply =
+      "💊 Your medicine reminder is active. Please take medicines according to the prescribed schedule.";
+  } 
+  else if (lower.includes("temperature") || lower.includes("fever")) {
+    reply =
+      "🌡️ Normal body temperature is approximately 36.5–37.5°C. If you have a persistent fever, consult a doctor.";
+  } 
+  else if (lower.includes("spo2") || lower.includes("oxygen")) {
+    reply =
+      "🫁 SpO₂ is used to monitor blood oxygen level. If readings are consistently low, medical attention may be required.";
+  } 
+  else if (lower.includes("health")) {
+    reply =
+      "🏥 LifeGuard helps you track medicines and basic health parameters such as BPM, SpO₂ and temperature.";
+  }
+
+  setMessages((prev) => [
+    ...prev,
+    {
+      sender: "bot",
+      text: reply,
+    },
+  ]);
+}
 
     setLoading(false);
   };
